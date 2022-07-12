@@ -10,14 +10,12 @@ class AuthService{
     async login(email,password){
         const user=await userService.findByEmail(email)
                         .catch(err=>{throw Error(err)});
-        console.log(user);
         if(!user){
             throw boom.unauthorized('User not found');
         }
         if(!await bcrypt.compare(password,user.password)){
             throw boom.unauthorized('Wrong password');
         }
-        console.log(user);
         return user;
     }
     signToken(user){
@@ -25,6 +23,7 @@ class AuthService{
             sub: user._id,
             role: user.role
         };
+        
         return {
             user,
             token: jwt.sign(payload,config.jwtSecret)

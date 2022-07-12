@@ -9,6 +9,7 @@ const LocalStrategy= new Strategy(
     async (email,password,done)=>{
         try {
             const user=await authService.login(email,password);
+            user.password=undefined;
             done(null,user);
         } catch (error) {
             done(error,false);

@@ -9,7 +9,10 @@ class UserService{
                 ...data,
                 password: await bcrypt.hash(data.password,10),
             })
-                .then(user=>resolve(user))
+                .then(user=>{
+                    user.password=undefined;
+                    resolve(user);
+                })
                 .catch(err=>reject(err));
         })
     }
@@ -22,7 +25,7 @@ class UserService{
     }
     findByEmail(email){
         return new Promise(async(resolve,reject)=>{
-            const user=await model.findOne({email})
+            let user=await model.findOne({email})
                         .catch(err=>reject(err));
             if(!user){
                 reject(boom.notFound('User not found'));
