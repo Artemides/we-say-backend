@@ -15,10 +15,10 @@ router.get('/',
                 .catch(err=>next(err));
     }
 );
-router.get('/:userId',
+router.get('/my-chats',
     passport.authenticate('jwt',{session:false}),
     async (req,res,next)=>{
-        await  chatService.listChatsByUser(req.params.userId)
+        await  chatService.listChatsByUser(req.user.sub)
                 .then(response=>{
                     res.status(200).json(response);
                 })
