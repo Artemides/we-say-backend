@@ -23,6 +23,10 @@ const UserSchema= new Schema({
         type:String,
         default: ""
     },
+    once:{
+        type:Boolean,
+        default:true
+    },
     role:{
         type: String,
         required:true,

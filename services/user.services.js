@@ -19,8 +19,40 @@ class UserService{
     listAllUsers(){
         return new Promise(async(resolve,reject)=>{
             await model.find()
-                .then(users=>resolve(users))
+                .then(users=>{
+                    users.forEach(user=>user.password=undefined);
+                    resolve(users);
+                })
                 .catch(err=>reject(err));
+        }) 
+    }
+    getCurrentUser(id){
+        return new Promise(async(resolve,reject)=>{
+            await model.findById(id)
+            .then(user=>{
+                user.password=undefined;
+                resolve(user)
+            })
+            .catch(err=>reject(err));
+        });
+    }
+    updateUser(id,changes){
+        return new Promise(async(resolve,reject)=>{
+            let user =await model.findById(id)
+            .catch(err=>reject(err));
+            if(!user){
+                reject(boom.notFound('User not found'));
+            }
+            user.avatar=changes.avatar;
+            user.once=false;
+            const newUser=await user.save()
+            .catch(err=>reject(err));
+            resolve({
+                name: newUser.name,
+                email: newUser.email,
+                id: newUser._id,
+                avatar: newUser.avatar
+            });
         })
     }
     findByEmail(email){

@@ -1,5 +1,4 @@
 const boom=require('@hapi/boom');
-
 function ValidatorSchemaHandler(schema,property){
     return (req,res,next)=>{
         const data=req[property];

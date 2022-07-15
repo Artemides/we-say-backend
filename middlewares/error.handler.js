@@ -10,7 +10,6 @@ function handlerError(err,req,res,next){
     })
 }
 function boomErrorHandler(err,req,res,next){
-    console.log(err);
     if(err.isBoom){
         const {output}=err;
         res.status(output.statusCode).json(output.payload);
@@ -19,8 +18,23 @@ function boomErrorHandler(err,req,res,next){
         next(err);
     }
 }
+function mongooseErrorHandler(err,req,res,next){
+    console.log("MONGOOSE ERROR");
+    console.log(err);
+    if(err.name==='MongoError'){
+        console.log(err)
+        res.status(400).json({
+            "message":err.message,
+            err
+        })
+    }
+    else{
+        next(err);
+    }
+}
 module.exports={
     logEror,
     handlerError,
-    boomErrorHandler
+    boomErrorHandler,
+    mongooseErrorHandler
 }

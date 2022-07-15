@@ -9,7 +9,7 @@ class AuthService{
 
     async login(email,password){
         const user=await userService.findByEmail(email)
-                        .catch(err=>{throw Error(err)});
+                        .catch(err=>{throw err});
         if(!user){
             throw boom.unauthorized('User not found');
         }
@@ -21,7 +21,8 @@ class AuthService{
     signToken(user){
         const payload={
             sub: user._id,
-            role: user.role
+            role: user.role,
+            once: user.once
         };
         
         return {
