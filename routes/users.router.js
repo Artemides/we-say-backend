@@ -1,5 +1,5 @@
 const express=require('express');
-const {createUserSchema,idValidator,updateUserAvatarSchema}=require('../Schemas/user.schema');
+const {createUserSchema,idValidator,updateUserAvatarSchema,getUserSchema}=require('../Schemas/user.schema');
 const {ValidatorSchemaHandler}=require('../middlewares/validator.handler' );
 const UserService=require('../services/user.services');
 const passport = require('passport');
@@ -7,8 +7,9 @@ const router=express.Router();
 const userService=new UserService();
 router.get('/',
     passport.authenticate('jwt',{session:false}),
+    ValidatorSchemaHandler(getUserSchema,'body'),
     async (req,res,next)=>{
-        await userService.listAllUsers()
+        await userService.listUnknownUsers(req.user.sub,req.body)
               .then(users=>{
                 res.status(200).json(users);
               })

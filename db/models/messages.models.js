@@ -1,17 +1,12 @@
 const {model,Schema}=require('mongoose');
 
 const MessageSchema= new Schema({
-    chat:{
-        type:Schema.ObjectId,
-        required:true,
-        ref: 'Chat'
-    },
     user: {
         type: Schema.ObjectId,
         required: true,
         ref: 'User'
     },
-    message: {
+    text: {
         type: String,
         require: true
     },

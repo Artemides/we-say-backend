@@ -1,5 +1,6 @@
 const express = require('express');
 const multer=require('multer');
+const passport = require('passport');
 const router = express.Router();
 const { ValidatorSchemaHandler } = require('../middlewares/validator.handler');
 const {
@@ -25,15 +26,13 @@ router.get('/',
 
 router.post(
   '/',
-  upload.single('file'),
   ValidatorSchemaHandler(sendMessageSchema, 'body'),
   async (req, res, next) => {
-    try{
-      const response = await messageService.sendMessage(req.body,req.file);
+    await messageService.sendMessage(req.body)
+    .then((response)=>{
       res.status(201).json(response);
-    } catch (error) {
-      next(error);
-    }
+    })
+    .catch(err=>next(err));
   }
 );
 router.patch(

@@ -1,29 +1,32 @@
 const model = require('../db/models/messages.models');
 const boom = require('@hapi/boom');
-const {socket}=require('../server/socket');
+const { socket } = require('../server/socket');
+const ChatService=require('../services/chat.services');
+const chatService=new ChatService();
 class MessageService {
-  async sendMessage(message,file) {
-    let fileUrl="";
-    if(file){
-        fileUrl='http://localhost:4000/files'+file.filename;
-    }
-    let newMessage = new model(message);
-    newMessage.fileUrl=fileUrl;
-    const response = await newMessage.save();
-    socket.io.emit('chat-message',response);
-    return response;
+  sendMessage(data) {
+    return new Promise(async (resolve, reject) => {
+      const {chat}=data;
+      let newMessage = new model({
+        text:data.text,
+        user:data.user,
+      });
+      const response = await newMessage.save().catch(err=>reject(err));
+      await chatService.updateChat(chat,response._id).catch(err=>reject(err));
+      socket.io.emit('chat-message', response);
+      resolve(response);
+    })
+   
   }
   async listAllMessages(query) {
     return new Promise((resolve, reject) => {
-      const { user,chat } = query;
+      const { user, chat } = query;
       const filter = {};
       if (user) {
         filter.user = user;
       }
-      if(chat){
-        filter.chat = chat;
-      }
-      model.find(filter)
+      model
+        .find(filter)
         .populate('user')
         .exec((err, populated) => {
           if (err) reject(err);
@@ -36,7 +39,7 @@ class MessageService {
     if (!currentMessage) {
       throw boom.notFound('Message not found');
     }
-    currentMessage.message = message;
+    currentMessage.text = message;
     const newMessage = await currentMessage.save();
     return newMessage;
   }
@@ -52,6 +55,8 @@ class MessageService {
         .catch((err) => reject(err));
     });
   }
+  listChatsByUser(userId) {
+    
+  }
 }
-
 module.exports = MessageService;

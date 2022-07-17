@@ -6,9 +6,12 @@ const name=Joi.string().min(2);
 const password=Joi.string().min(8);
 const email=Joi.string().email();
 const avatar=Joi.string().min(2);
-
+const users= Joi.array().items(Joi.uuid());
 const idValidator=Joi.object({
     id:id.required()
+})
+const getUserSchema=Joi.object({
+    users
 })
 const createUserSchema=Joi.object({
     name:name.required(),
@@ -32,5 +35,6 @@ module.exports={
     updateUserSchema,
     idValidator,
     updateUserAvatarSchema,
+    getUserSchema,
     loginSchema
 }

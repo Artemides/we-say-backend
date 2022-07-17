@@ -15,16 +15,6 @@ router.get('/',
                 .catch(err=>next(err));
     }
 );
-router.get('/my-chats',
-    passport.authenticate('jwt',{session:false}),
-    async (req,res,next)=>{
-        await  chatService.listChatsByUser(req.user.sub)
-                .then(response=>{
-                    res.status(200).json(response);
-                })
-                .catch(err=>next(err));
-    }
-);
 router.post('/',
     ValidatorSchemaHandler(createChatSchema,'body'),
     async (req,res,next)=>{
@@ -35,4 +25,13 @@ router.post('/',
             .catch(err=>next(err));
     }
 )
+router.get('/my-chats',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+      await chatService.getLastMessageByAllChats(req.user.sub)
+        .then(response => {
+          res.status(200).json(response);
+        })
+        .catch(err => next(err));
+});
 module.exports=router;
