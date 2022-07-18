@@ -26,9 +26,10 @@ router.get('/',
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   ValidatorSchemaHandler(sendMessageSchema, 'body'),
   async (req, res, next) => {
-    await messageService.sendMessage(req.body)
+    await messageService.sendMessage(req.body,req.user.sub)
     .then((response)=>{
       res.status(201).json(response);
     })

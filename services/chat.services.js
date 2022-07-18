@@ -35,7 +35,18 @@ class ChatService {
         .catch((err) => reject(err));
     });
   }
-
+  listMessagesByChat(query){
+    const {chatId}=query;
+    return new Promise(async(resolve,reject)=>{
+      await model
+        .findById(chatId)
+        .populate('messages')
+        .exec((err,populated)=>{
+          if(err) reject(err);
+          resolve(populated);
+        })
+    })
+  }
   listChatsByUser(userId) {
     return new Promise(async (resolve, reject) => {
       await model

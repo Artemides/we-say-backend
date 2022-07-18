@@ -34,4 +34,14 @@ router.get('/my-chats',
         })
         .catch(err => next(err));
 });
+router.get('/chat-messages',
+    passport.authenticate('jwt', { session: false }),
+    async (req,res,next)=>{
+        await chatService.listMessagesByChat(req.query)
+        .then((messages)=>{
+            res.status(200).json(messages)
+        })
+        .catch(err=>next(err));
+    }
+)
 module.exports=router;

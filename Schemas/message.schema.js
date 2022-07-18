@@ -4,10 +4,12 @@ const id=joi.objectId();
 const text=joi.string().min(1);
 const user=joi.string().min(2);
 const chat=joi.objectId();
+const to=joi.objectId();
 const sendMessageSchema=joi.object({
     chat:chat.required(),
     user:id.required(),
-    text:text.required()
+    text:text.required(),
+    to: to.required()
 });
 const updateMessageSchema=joi.object({
     text:text

@@ -4,16 +4,20 @@ const { socket } = require('../server/socket');
 const ChatService=require('../services/chat.services');
 const chatService=new ChatService();
 class MessageService {
-  sendMessage(data) {
+  sendMessage(data,userId) {
     return new Promise(async (resolve, reject) => {
-      const {chat}=data;
+      let {chat,to}=data;
       let newMessage = new model({
         text:data.text,
         user:data.user,
       });
       const response = await newMessage.save().catch(err=>reject(err));
       await chatService.updateChat(chat,response._id).catch(err=>reject(err));
-      socket.io.emit('chat-message', response);
+      to=global.usersOnline.get(to);
+      const from=global.usersOnline.get(userId);
+      if(to){
+        socket.io.to(from).to(to).emit('comming-messages', response);
+      }
       resolve(response);
     })
    
