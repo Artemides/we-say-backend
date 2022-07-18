@@ -7,7 +7,7 @@ const password=Joi.string().min(8);
 const email=Joi.string().email();
 const avatar=Joi.string().min(2);
 const users= Joi.array().items(Joi.uuid());
-const idValidator=Joi.object({
+const idValidator=Joi.object({  
     id:id.required()
 })
 const getUserSchema=Joi.object({

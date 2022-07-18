@@ -15,8 +15,9 @@ class MessageService {
       await chatService.updateChat(chat,response._id).catch(err=>reject(err));
       to=global.usersOnline.get(to);
       const from=global.usersOnline.get(userId);
-      if(to){
-        socket.io.to(from).to(to).emit('comming-messages', response);
+      if(to || from){
+        socket.io.to(to).emit('comming-messages', response);
+        socket.io.to(from).emit('comming-messages', response);
       }
       resolve(response);
     })

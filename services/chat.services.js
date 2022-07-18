@@ -2,14 +2,31 @@ const { Types } = require('mongoose');
 const model = require('../db/models/chat.models');
 
 class ChatService {
-  createChat(data) {
+  createChat(userId,otherUserId) {
     return new Promise(async (resolve, reject) => {
-      const newChat = new model(data);
+      const currentChat= await this.findChatWhith(userId,otherUserId).catch(err=>{reject(err)});
+      if(currentChat){
+        resolve(currentChat);
+      }
+      const data={
+        users:[userId,otherUserId]
+      }
+      const newChat = new model(data);  
       await model
         .create(newChat)
         .then((response) => {
           resolve(response);
         })
+        .catch((err) => reject(err));
+    });
+  }
+  findChatWhith(userId,otherUserId) {
+    return new Promise(async (resolve, reject) => {
+      await model
+        .findOne({
+          users: { $all: [userId, otherUserId] },
+        })
+        .then((response) => resolve(response))
         .catch((err) => reject(err));
     });
   }

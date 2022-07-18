@@ -16,9 +16,10 @@ router.get('/',
     }
 );
 router.post('/',
+    passport.authenticate('jwt',{session:false}),
     ValidatorSchemaHandler(createChatSchema,'body'),
     async (req,res,next)=>{
-        await chatService.createChat(req.body)
+        await chatService.createChat(req.user.sub,req.body.otherUserId)
             .then(response=>{
                 res.status(201).json(response);
             })
@@ -40,6 +41,16 @@ router.get('/chat-messages',
         await chatService.listMessagesByChat(req.query)
         .then((messages)=>{
             res.status(200).json(messages)
+        })
+        .catch(err=>next(err));
+    }
+)
+router.post('/chat-with',
+    passport.authenticate('jwt', { session: false }),
+    async (req,res,next)=>{
+        await chatService.findChatWhith(req.user.sub,req.body)
+        .then((response)=>{
+            res.status(201).json(response);
         })
         .catch(err=>next(err));
     }

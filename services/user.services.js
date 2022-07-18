@@ -23,10 +23,8 @@ class UserService {
   listUnknownUsers(id,body) {
     return new Promise(async (resolve, reject) => {
         const currentChats=await chatService.listChatsByUser(id);
-        console.log(currentChats);
         const knownUsers=currentChats.reduce((acc,chat)=>{
             chat.users.forEach(user=>{
-                console.log(typeof user._id);
                 if(user._id!=id){
                     acc.push(Types.ObjectId(user._id));
                 }
