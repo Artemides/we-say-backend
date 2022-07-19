@@ -1,5 +1,6 @@
 const { Types } = require('mongoose');
 const model = require('../db/models/chat.models');
+const messageModel=require('../db/models/messages.models');
 
 class ChatService {
   createChat(userId,otherUserId) {
@@ -8,16 +9,22 @@ class ChatService {
       if(currentChat){
         resolve(currentChat);
       }
+      //CREATE DEFAULT MESSAGES
+      const defaultMessage={
+        user: userId,
+        text:'Welcome,Say hello to your new friend',
+      }
+      const message= await messageModel.create(defaultMessage).catch(err=>{reject(err)});
+      //CREATE NEW CHAT
       const data={
-        users:[userId,otherUserId]
+        users:[userId,otherUserId],
+        messages:[message._id],
       }
       const newChat = new model(data);  
-      await model
+      const response=await model
         .create(newChat)
-        .then((response) => {
-          resolve(response);
-        })
         .catch((err) => reject(err));
+      resolve(response);
     });
   }
   findChatWhith(userId,otherUserId) {

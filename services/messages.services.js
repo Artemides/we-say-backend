@@ -16,8 +16,7 @@ class MessageService {
       to=global.usersOnline.get(to);
       const from=global.usersOnline.get(userId);
       if(to || from){
-        socket.io.to(to).emit('comming-messages', response);
-        socket.io.to(from).emit('comming-messages', response);
+        socket.io.to(from).to(to).emit('comming-messages', response);
       }
       resolve(response);
     })
@@ -59,9 +58,6 @@ class MessageService {
         })
         .catch((err) => reject(err));
     });
-  }
-  listChatsByUser(userId) {
-    
   }
 }
 module.exports = MessageService;
