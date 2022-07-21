@@ -3,7 +3,7 @@ const socket = {};
 function connect(server) {
   socket.io = new Server(server, {
     cors: {
-      origin: 'https://62d9df12f7060900070d0048--dashing-heliotrope-75cc5a.netlify.app',
+      origin: 'https://we-say.netlify.app',
       credentials: true,
     },
   });
