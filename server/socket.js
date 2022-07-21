@@ -1,34 +1,36 @@
-const {Server}=require('socket.io');
-const socket={};
-function connect(server){
-    socket.io=new Server(server,{
-        cors:{
-            origin:'https://62d769ecd1e587000a53a888--dashing-heliotrope-75cc5a.netlify.app',
-            credentials:true
-        }
+const { Server } = require('socket.io');
+const socket = {};
+function connect(server) {
+  socket.io = new Server(server, {
+    cors: {
+      origin: 'https://62d9dd008965120008c286e3--dashing-heliotrope-75cc5a.netlify.app/',
+      credentials: true,
+    },
+  });
+  serve(socket.io);
+}
+global.usersOnline = new Map();
+function serve(io) {
+  io.on('connection', (socket) => {
+    socket.on('user-online', (userId) => {
+      global.usersOnline.set(userId, socket.id);
+      io.emit('set-online', userId);
+      io.emit('online-users',{users:Array.from(global.usersOnline.keys())});
     });
-    serve(socket.io);
-}
-global.usersOnline=new Map();
-function serve(io){
-    io.on("connection",(socket)=>{
-        socket.on('user-online',(userId)=>{
-            global.usersOnline.set(userId,socket.id);
-            console.log(global.usersOnline);
-        })
-
-    })
-    io.on('disconnect',()=>{
-        global.usersOnline.forEach((value,key)=>{
-            if(value===socket.id){
-                global.usersOnline.delete(key);
-            }
-        })
-        console.log(global.usersOnline);
-    })
+    socket.on('disconnect', () => {
+      global.usersOnline.forEach((value, key) => {
+        if (value === socket.id) {
+          io.emit('set-offline',key);
+          global.usersOnline.delete(key);
+        }
+      });
+    });
+    
+    
+});
 }
 
-module.exports={
-    connect,
-    socket
-}
+module.exports = {
+  connect,
+  socket,
+};
