@@ -1,10 +1,18 @@
 const express=require('express');
-const {createUserSchema,idValidator,updateUserAvatarSchema,getUserSchema}=require('../Schemas/user.schema');
+const {createUserSchema,getUserSchema}=require('../Schemas/user.schema');
 const {ValidatorSchemaHandler}=require('../middlewares/validator.handler' );
+const {uploadToGCS} = require('../middlewares/uploadGCS.handler');
 const UserService=require('../services/user.services');
 const passport = require('passport');
 const router=express.Router();
 const userService=new UserService();
+const Multer = require('multer');
+const multer=Multer({
+    storage: Multer.memoryStorage(),
+    limits: {
+        fileSize: 2 * 1024 * 1024, // le than 2MB
+    }
+})
 router.get('/',
     passport.authenticate('jwt',{session:false}),
     ValidatorSchemaHandler(getUserSchema,'body'),
@@ -37,14 +45,16 @@ router.post('/',
         }
 );
 router.patch('/avatar',
-   passport.authenticate('jwt',{session:false}), 
-   ValidatorSchemaHandler(updateUserAvatarSchema,'body'),
+   multer.single('profile-image'),
+   uploadToGCS,
    async(req,res,next)=>{
-        await userService.updateUser(req.user.sub,req.body)
-            .then((user)=>{
-                res.status(200).json({message: "updated"});
-            })
-            .catch(err=>next(err));
+        console.log(req.file.gcsUrl);
+        res.send(req.file.gcsUrl);
+        // await userService.updateUser(req.user.sub,req.body)
+        //     .then((user)=>{
+        //         res.status(200).json({message: "updated"});
+        //     })
+        //     .catch(err=>next(err));
    }
 )
 module.exports=router;

@@ -19,6 +19,7 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "@google-cloud/storage": "^6.2.3",
     "@hapi/boom": "^10.0.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
