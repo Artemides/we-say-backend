@@ -12,7 +12,7 @@ function uploadToGCS(req,res,next){
         return next(boom.badRequest('No files were uploaded'));
     }
     const bucket=storage.bucket(config.gcsBucketName);
-    const gcsFilename=`${Date.now()}-${req.file.filename}`;
+    const gcsFilename=`${Date.now()}-${req.file.originalname}`;
     const file=bucket.file(gcsFilename);
     const stream=file.createWriteStream({
         metadata:{
@@ -25,7 +25,6 @@ function uploadToGCS(req,res,next){
     })
     stream.on('finish',()=>{
         req.file.cloudStorageObject=gcsFilename;
-        
         return file.makePublic()
         .then(()=>{
             req.file.gcsUrl=`https://storage.googleapis.com/${bucket.name}/${gcsFilename}`;

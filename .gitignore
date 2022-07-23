@@ -220,3 +220,5 @@ postgres_data
 postgres_data
 #Mysql
 mysql_data
+#GCS
+gcs-key.json
