@@ -8,7 +8,7 @@ const config={
     jwtSecret: process.env.JWT_SECRET,
     gcsBucketName: process.env.GCS_BUCKET_NAME,
     gcsProjectId: process.env.GCS_PROJECT_ID,
-    gcsCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    gcsCredentials: process.env.GOOGLE_CREDENTIALS,
 }
 module.exports={
     config
