@@ -45,6 +45,7 @@ router.post('/',
         }
 );
 router.patch('/avatar',
+   passport.authenticate('jwt',{session:false}),
    multer.single('profile-image'),
    uploadToGCS,
    async(req,res,next)=>{
