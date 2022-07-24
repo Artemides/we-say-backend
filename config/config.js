@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+//environment variables
 const config={
     env: process.env.NOVE_ENV||'development',
     dbUser: process.env.DB_USER,
