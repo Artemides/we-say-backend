@@ -1,10 +1,10 @@
 const {Storage}=require('@google-cloud/storage');
 const {config}=require('../config/config');
-const path=require('path'); 
 const boom =require('@hapi/boom');
 const storage= new Storage({
     projectId:config.gcsProjectId,
-    keyFilename:path.join(__dirname,'../gcs-key.json')
+    keyFilename:config.gcsCredentials
+
 
 })
 function uploadToGCS(req,res,next){
