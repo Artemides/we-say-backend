@@ -56,13 +56,13 @@ class UserService {
         .catch((err) => reject(err));
     });
   }
-  updateUser(id, changes) {
+  updateUser(id, gcsUrl) {
     return new Promise(async (resolve, reject) => {
       let user = await model.findById(id).catch((err) => reject(err));
       if (!user) {
         reject(boom.notFound('User not found'));
       }
-      user.avatar = changes.avatar;
+      user.avatar = gcsUrl;
       user.once = false;
       const newUser = await user.save().catch((err) => reject(err));
       resolve({

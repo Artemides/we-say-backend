@@ -45,16 +45,15 @@ router.post('/',
         }
 );
 router.patch('/avatar',
+   passport.authenticate('jwt',{session:false}),
    multer.single('profile-image'),
    uploadToGCS,
    async(req,res,next)=>{
-        console.log(req.file.gcsUrl);
-        res.send(req.file.gcsUrl);
-        // await userService.updateUser(req.user.sub,req.body)
-        //     .then((user)=>{
-        //         res.status(200).json({message: "updated"});
-        //     })
-        //     .catch(err=>next(err));
+        await userService.updateUser(req.user.sub,req.file.gcsUrl)
+            .then((user)=>{
+                res.status(200).json({message: "updated"});
+            })
+            .catch(err=>next(err));
    }
 )
 module.exports=router;
