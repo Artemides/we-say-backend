@@ -4,8 +4,6 @@ const boom =require('@hapi/boom');
 const storage= new Storage({
     projectId:config.gcsProjectId,
     keyFilename:config.gcsCredentials
-
-
 })
 function uploadToGCS(req,res,next){
     if(!req.file){
