@@ -21,6 +21,7 @@ function uploadToGCS(req,res,next){
         req.file.cloudStorageError=err;
         return next(err);
     })
+    //finish file
     stream.on('finish',()=>{
         req.file.cloudStorageObject=gcsFilename;
         return file.makePublic()
