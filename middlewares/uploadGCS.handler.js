@@ -31,5 +31,6 @@ function uploadToGCS(req,res,next){
         });
     });
     stream.end(req.file.buffer);
+    console.log(req.file);
 }
 module.exports={uploadToGCS}
