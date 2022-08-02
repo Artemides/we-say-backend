@@ -1,6 +1,8 @@
 const { Server } = require('socket.io');
 const socket = {};
+
 function connect(server) {
+  //config socket cors
   socket.io = new Server(server, {
     cors: {
       origin: 'https://we-say.netlify.app',
@@ -25,8 +27,8 @@ function serve(io) {
         }
       });
     });
-    
-    
+
+
 });
 }
 
